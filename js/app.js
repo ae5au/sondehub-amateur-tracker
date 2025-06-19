@@ -435,6 +435,27 @@ var format_time_friendly = function(start, end) {
     }
 };
 
+var format_coordinates = function(lat, lon, name) {
+    var coords_text;
+    var ua =  navigator.userAgent.toLowerCase();
+    var span = document.createElement('span')
+    var a = document.createElement("a")
+    span.appendChild(a)
+    // determine how to link the coordinates to a native app, if on a mobile device
+    if(ua.indexOf('iphone') > -1) {
+        a.href = 'maps://?q='+lat+','+lon
+    } else if(ua.indexOf('android') > -1) {
+        a.href = 'geo:'+lat+','+lon+'?q='+lat+','+lon+'('+name+')'
+    } else {
+        a.href = 'https://www.google.com/maps/search/?api=1&query='+lat+','+lon
+        a.target="_blank"
+        a.rel="noopener noreferrer"
+    }
+    a.innerText = roundNumber(lat, 5) + ', ' + roundNumber(lon, 5)
+
+    return span.innerHTML;
+};
+
 // runs every second
 var updateTime = function(date) {
     // update timebox

@@ -1382,21 +1382,7 @@ function updateVehicleInfo(vcallsign, newPosition) {
           hrate_text = imp ? (vehicle.horizontal_rate * 196.850394).toFixed(1) + ' ft/min' : vehicle.horizontal_rate.toFixed(1) + ' m/s';
   }
 
-  var coords_text;
-  var ua =  navigator.userAgent.toLowerCase();
-
-  // determine how to link the vehicle coordinates to a native app, if on a mobile device
-  if(ua.indexOf('iphone') > -1) {
-      coords_text = '<a id="launch_mapapp" href="maps://?q='+newPosition.gps_lat+','+newPosition.gps_lon+'">' +
-                    roundNumber(newPosition.gps_lat, 5) + ', ' + roundNumber(newPosition.gps_lon, 5) +'</a>' +
-                    ' <i class="icon-location"></i>';
-  } else if(ua.indexOf('android') > -1) {
-      coords_text = '<a id="launch_mapapp" href="geo:'+newPosition.gps_lat+','+newPosition.gps_lon+'?q='+newPosition.gps_lat+','+newPosition.gps_lon+'('+vcallsign+')">' +
-                    roundNumber(newPosition.gps_lat, 5) + ', ' + roundNumber(newPosition.gps_lon, 5) +'</a>' +
-                    ' <i class="icon-location"></i>';
-  } else {
-      coords_text = roundNumber(newPosition.gps_lat, 5) + ', ' + roundNumber(newPosition.gps_lon, 5);
-  }
+  var coords_text = format_coordinates(newPosition.gps_lat, newPosition.gps_lon, vcallsign) + ' <i class="icon-location"></i>';
 
   // format altitude strings
   var text_alt      = Number((imp) ? Math.floor(3.2808399 * parseInt(newPosition.gps_alt)) : parseInt(newPosition.gps_alt)).toLocaleString("us");
@@ -2337,20 +2323,7 @@ function mapInfoBox_handle_prediction(event) {
         altitude = Math.round(data.alt) + " m";
     }
 
-    var coords_text;
-    var ua =  navigator.userAgent.toLowerCase();
-
-    // determine how to link the vehicle coordinates to a native app, if on a mobile device
-    if(ua.indexOf('iphone') > -1) {
-        coords_text = '<a href="maps://?q='+data.lat+','+data.lon+'">' +
-                      roundNumber(data.lat, 5) + ', ' + roundNumber(data.lon, 5) + '</a>';
-    } else if(ua.indexOf('android') > -1) {
-        coords_text = '<a href="geo:'+data.lat+','+data.lon+'?q='+data.lat+','+data.lon+'(Prediction)">' +
-                      roundNumber(data.lat, 5) + ', ' + roundNumber(data.lon, 5) +'</a>';
-    } else {
-        coords_text = '<a href="https://www.google.com/maps/search/?api=1&query='+data.lat+','+data.lon+'" target="_blank" rel="noopener noreferrer">' +
-            roundNumber(data.lat, 5) + ', ' + roundNumber(data.lon, 5) +'</a>';
-    }
+    var coords_text = format_coordinates(newPosition.gps_lat, "Prediction") + ' <i class="icon-location"></i>';
 
     mapInfoBox.setContent("<pre>" +
                         formatDate(new Date(parseInt(data.time) * 1000), true) + "\n\n" +
